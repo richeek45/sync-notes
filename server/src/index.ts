@@ -24,7 +24,6 @@ const wsServer = Server.configure({
              id: 'clwjiy9hv000072y1i9v0rxx7'
             }
           })
-          console.log(data, "documents");
           const documents = (new Uint8Array(data?.document as ArrayBuffer))
           return documents;
         } catch(error) {
