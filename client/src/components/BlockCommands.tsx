@@ -88,6 +88,9 @@ export const CustomBlockList: CommandTypes[] = [
   }
 ]
 
+/* 
+  Reference for suggestion: https://github.com/ueberdosis/tiptap/blob/main/packages/suggestion/src/suggestion.ts
+*/
 export const renderItems = () => {
   let component: ReactRenderer | null = null;
   let popup: Instance<Props>[] | null = null;
