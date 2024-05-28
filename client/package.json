@@ -42,6 +42,7 @@
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
     "tippy.js": "^6.3.7",
+    "tiptap-extension-global-drag-handle": "^0.1.7",
     "tunnel-rat": "^0.1.2",
     "uuid": "^9.0.1",
     "y-prosemirror": "^1.2.5",

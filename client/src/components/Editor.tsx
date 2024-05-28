@@ -21,6 +21,7 @@ import { useAtomValue } from 'jotai'
 import { rangeAtom } from '../utils/atoms'
 import { useState } from 'react'
 import { cn } from '../lib/utils'
+import GlobalDragHandle from 'tiptap-extension-global-drag-handle'
 
 const ydoc = new Y.Doc();
 const provider = new HocuspocusProvider({
@@ -101,6 +102,10 @@ const extensions = [
   Paragraph,
   Text,
   TaskItem,
+  GlobalDragHandle.configure({
+    dragHandleWidth: 30,
+    scrollTreshold: 100 
+  }),
   TaskList.configure({
     itemTypeName: 'taskItem'
   }),
@@ -111,14 +116,14 @@ const extensions = [
       keepMarks: true,
       keepAttributes: false, 
       HTMLAttributes: {
-        class: cn("list-disc list-outside leading-3 -mt-2"),
+        class: cn("list-disc list-outside leading-normal -mt-2"),
       },
     },
     orderedList: {
       keepMarks: true,
       keepAttributes: false, 
       HTMLAttributes: {
-        class: cn("list-decimal list-outside leading-3 -mt-2"),
+        class: cn("list-decimal list-outside leading-normal -mt-2 pl-5"),
       },
     },
     listItem: {
@@ -268,19 +273,21 @@ const DocEditor = () => {
         <EditorProvider 
           extensions={extensions} 
           content={docSchema}  
-          // slotBefore={<MenuBar />}
           editorProps={editorProps}
+
           onUpdate={({ editor }) => {
             setDocSchema(editor.getJSON());
           }}
-          autofocus={true}
+
+          autofocus='start'
+          // slotBefore={<MenuBar />}
           // slotAfter={<MyEditorFooter />}
-          >
-            <CommandView />
-            {/* <FloatingMenu editor={null} children={<FloatingMenu1 />} />  */}
-            <BubbleMenu editor={null} children={<BubbleMenu1 />} />
-          </EditorProvider>
-        </EditorRoot>
+        >
+          <CommandView />
+          {/* <FloatingMenu editor={null} children={<FloatingMenu1 />} />  */}
+          <BubbleMenu editor={null} children={<BubbleMenu1 />} />
+        </EditorProvider>
+      </EditorRoot>
     </>
   )
 }
