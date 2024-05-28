@@ -1,5 +1,5 @@
+import DocEditor from './components/Editor'
 import './App.css'
-import Editor from './components/Editor'
 
 function App() {
 
@@ -7,7 +7,7 @@ function App() {
     <div>
     Websocket Testing
     <div style={{ width: '80vw', height: '80vh'}}>
-      <Editor />
+      <DocEditor />
     </div>
   </div>
   )
