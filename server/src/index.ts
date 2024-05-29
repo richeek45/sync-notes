@@ -4,6 +4,7 @@ import expressWebsockets from "express-ws";
 import dotenv from "dotenv";
 import { Database } from "@hocuspocus/extension-database";
 import { PrismaClient } from '@prisma/client'
+import cors from 'cors';
 
 export const prisma = new PrismaClient();
 
@@ -59,8 +60,17 @@ const wsServer = Server.configure({
 const { app } = expressWebsockets(express());
 const port = process.env.PORT || 8080;
 
+app.use(cors());
+
 app.get("/", (req: Request, res: Response) => {
   res.send("Express + TypeScript Server is working");
+})
+
+app.get("/allDocs", async (req: Request, res: Response) => {
+  const allDocs = await prisma.document.findMany({});
+  console.log(allDocs);
+  res.json(allDocs);
+  // res.send("doc name changed!!");
 })
 
 app.ws("/", (websocket, request) => {
@@ -71,7 +81,6 @@ app.ws("/", (websocket, request) => {
     },
   };
 
-  console.log(request)
   wsServer.handleConnection(websocket, request, context);
 })
 
