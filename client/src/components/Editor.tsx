@@ -1,9 +1,9 @@
-import { EditorProvider, JSONContent } from '@tiptap/react'
+import { EditorProvider, JSONContent, useCurrentEditor } from '@tiptap/react'
 import CommandView from './CommandView'
 import { EditorRoot } from './EditorRoot'
 import { useState } from 'react'
 import SelectMenu from './SelectMenu'
-import { extensions } from '../utils/extensions'
+import { charLimit, extensions } from '../utils/extensions'
 
 const handleCommandNavigation = (event: KeyboardEvent) => {
   if (["ArrowUp", "ArrowDown", "Enter"].includes(event.key)) {
@@ -125,9 +125,24 @@ const defaultValue = {
 
 const DocHeading = () => {
   // get the heading from the provider and add it
+  const { editor } = useCurrentEditor();
+  const charsCount = editor?.storage.characterCount;
 
   return (
-    <h1 className='ml-10'>Document Heading</h1>
+    <>
+      <div className="relative w-[70%] max-w-screen-lg">
+        <h1 className='ml-10'>Document Heading</h1>
+            <div className="flex absolute -right-36 top-0 z-10 mb-5 gap-2">
+              {/* <div className="rounded-lg bg-accent px-2 py-1 text-sm text-muted-foreground">{saveStatus}</div> */}
+              <div className={"rounded-lg bg-accent px-2 py-1 text-sm text-muted-foreground"}>
+                {/* {charsCount} Words */}
+                {editor?.storage.characterCount.characters()}/{charLimit} characters
+                  <br />
+                  {editor?.storage.characterCount.words()} words
+              </div>
+            </div>
+          </div>
+    </>
   )
 }
 
@@ -150,6 +165,12 @@ const DocEditor = () => {
           slotBefore={<DocHeading />}
           // slotAfter={<MyEditorFooter />}
         >
+
+          {/* <div className="character-count">
+            {editor?.storage.characterCount.characters()}/{24} characters
+            <br />
+            {editor?.storage.characterCount.words()} words
+          </div> */}
           <CommandView />
           {/* <FloatingMenu editor={null} children={<FloatingMenu1 />} />  */}
           <SelectMenu />

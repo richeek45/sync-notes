@@ -11,6 +11,8 @@ import Collaboration from '@tiptap/extension-collaboration';
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor'
 import Placeholder from '@tiptap/extension-placeholder'
 import Underline from '@tiptap/extension-underline'
+import CharacterCount from '@tiptap/extension-character-count'
+import Link from '@tiptap/extension-link'
 import { v4 as uuid } from 'uuid';
 import { cn } from '../lib/utils'
 import GlobalDragHandle from 'tiptap-extension-global-drag-handle'
@@ -18,6 +20,8 @@ import { CustomBlockCommand, CustomBlockList, renderItems } from '../components/
 import { HocuspocusProvider } from '@hocuspocus/provider';
 import * as Y from "yjs";
 import BubbleMenu from '@tiptap/extension-bubble-menu'
+
+export const charLimit = 2000;
 
 const ydoc = new Y.Doc();
 
@@ -52,6 +56,16 @@ export const extensions = [
   }),
   BubbleMenu,
   Underline,
+  CharacterCount.configure({
+    limit: charLimit,
+  }),
+  Link.configure({
+    autolink: false,
+    protocols: ['ftp', 'mailto'],
+    HTMLAttributes: {
+      class: 'cursor-pointer',
+    },
+  }),
   TaskList.configure({
     itemTypeName: 'taskItem'
   }),
@@ -86,12 +100,12 @@ export const extensions = [
     codeBlock: {
       languageClassPrefix: "language-javacript",     
       HTMLAttributes: {
-        class: cn("rounded-md bg-muted text-muted-foreground border p-5 font-mono font-medium"),
+        class: cn("rounded-md bg-muted text-muted-foreground border p-5 bg-slate-100 font-mono font-medium"),
       },
     },
     code: {
       HTMLAttributes: {
-        class: cn("rounded-md bg-muted  px-1.5 py-1 font-mono font-medium"),
+        class: cn("rounded-md bg-muted  px-1.5 py-1 bg-slate-100 font-mono font-medium"),
         spellcheck: "false",
       },
     },
