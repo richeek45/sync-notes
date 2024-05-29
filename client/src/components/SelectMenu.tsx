@@ -1,5 +1,5 @@
 import { BubbleMenu, useCurrentEditor } from "@tiptap/react";
-import { Bold, Italic, Strikethrough, Underline } from "lucide-react";
+import { Bold, Code, CodeXml, Italic, Strikethrough, Underline } from "lucide-react";
 import { Button } from "./ui/button";
 
 const SelectMenu = () => {
@@ -42,6 +42,21 @@ const SelectMenu = () => {
       className={`${buttonClass} ${editor.isActive('strike') ? 'is-active' : ''}`}
     >
       <Strikethrough />
+    </Button>
+    <Button
+      variant='ghost'
+      onClick={() => editor.chain().focus().toggleCode().run()}
+      disabled={!editor.can().chain().focus().toggleCode().run()}
+      className={`${buttonClass} ${editor.isActive('code') ? 'is-active' : ''}`}
+    >
+      <Code />
+    </Button>
+    <Button
+      variant='ghost'
+      onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+      className={`${buttonClass} ${editor.isActive('codeBlock') ? 'is-active' : ''}`}
+    >
+      <CodeXml />
     </Button>
   </BubbleMenu>)
 }
