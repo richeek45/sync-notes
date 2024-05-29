@@ -123,22 +123,21 @@ const defaultValue = {
   ],
 };
 
-const DocHeading = () => {
-  // get the heading from the provider and add it
+const DocHeading = ({ title } : { title: string }) => {
   const { editor } = useCurrentEditor();
   const charsCount = editor?.storage.characterCount;
 
   return (
     <>
       <div className="relative w-[70%] max-w-screen-lg">
-        <h1 className='ml-10'>Document Heading</h1>
+        <h1 className='ml-10'>{ title || "Document Heading" }</h1>
             <div className="flex absolute -right-36 top-0 z-10 mb-5 gap-2">
               {/* <div className="rounded-lg bg-accent px-2 py-1 text-sm text-muted-foreground">{saveStatus}</div> */}
               <div className={"rounded-lg bg-accent px-2 py-1 text-sm text-muted-foreground"}>
                 {/* {charsCount} Words */}
-                {editor?.storage.characterCount.characters()}/{charLimit} characters
+                {charsCount.characters()}/{charLimit} characters
                   <br />
-                  {editor?.storage.characterCount.words()} words
+                  {charsCount.words()} words
               </div>
             </div>
           </div>
@@ -148,6 +147,7 @@ const DocHeading = () => {
 
 const DocEditor = () => {
   const [docSchema, setDocSchema] = useState<JSONContent>(defaultValue);
+
 
   return (
     <>
@@ -162,7 +162,7 @@ const DocEditor = () => {
           }}
 
           autofocus='start'
-          slotBefore={<DocHeading />}
+          slotBefore={<DocHeading title={""} />}
           // slotAfter={<MyEditorFooter />}
         >
 
