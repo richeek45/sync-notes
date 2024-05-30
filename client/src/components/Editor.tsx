@@ -129,18 +129,20 @@ const DocHeading = ({ title } : { title: string }) => {
 
   return (
     <>
-      <div className="relative w-[70%] max-w-screen-lg">
+      <div className="flex justify-between gap-10 w-[100%] py-2">
         <h1 className='ml-10'>{ title || "Document Heading" }</h1>
-            <div className="flex absolute -right-36 top-0 z-10 mb-5 gap-2">
-              {/* <div className="rounded-lg bg-accent px-2 py-1 text-sm text-muted-foreground">{saveStatus}</div> */}
-              <div className={"rounded-lg bg-accent px-2 py-1 text-sm text-muted-foreground"}>
-                {/* {charsCount} Words */}
-                {charsCount.characters()}/{charLimit} characters
-                  <br />
-                  {charsCount.words()} words
-              </div>
-            </div>
+        <div className="flex z-10 mb-5 gap-2">
+          {/* <div className="rounded-lg bg-accent px-2 py-1 text-sm text-muted-foreground">{saveStatus}</div> */}
+          <div className={"flex flex-col justify-center align-middle rounded-lg bg-accent px-2 text-sm text-muted-foreground"}>
+            <span>
+              {charsCount.characters()}/{charLimit} characters
+            </span>
+            <span>
+              {charsCount.words()} words
+            </span>
           </div>
+        </div>
+      </div>
     </>
   )
 }

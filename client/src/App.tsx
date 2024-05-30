@@ -5,9 +5,9 @@ import './App.css'
 function App() {
 
   return (
-    <div className="grid min-h-screen w-full overflow-hidden lg:grid-cols-[280px_1fr]">
+    <div className="flex min-h-screen w-screen overflow-hidden">
       <SideNavbar />
-      <div style={{ width: '80vw', height: '80vh'}}>
+      <div className="mx-2">
         <DocEditor />
       </div>
     </div>

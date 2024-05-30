@@ -16,7 +16,7 @@ const SideNavbar = () => {
   }, [])
 
   return (
-      <div className="hidden border-r bg-gray-100/40 lg:block dark:bg-gray-800/40">
+      <div className="hidden border-r overflow-hidden py-10 h-full min-w-36  bg-gray-100/40 lg:block dark:bg-gray-800/40">
         <div className="flex flex-col gap-2">
           <div className="flex h-[60px] items-center px-6">
             <Button className="flex items-center gap-2 font-semibold" >
