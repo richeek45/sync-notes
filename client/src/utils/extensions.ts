@@ -13,118 +13,108 @@ import Placeholder from '@tiptap/extension-placeholder'
 import Underline from '@tiptap/extension-underline'
 import CharacterCount from '@tiptap/extension-character-count'
 import Link from '@tiptap/extension-link'
-import { v4 as uuid } from 'uuid';
 import { cn } from '../lib/utils'
 import GlobalDragHandle from 'tiptap-extension-global-drag-handle'
 import { CustomBlockCommand, CustomBlockList, renderItems } from '../components/BlockCommands'
 import { HocuspocusProvider } from '@hocuspocus/provider';
-import * as Y from "yjs";
 import BubbleMenu from '@tiptap/extension-bubble-menu'
+import { getRandomColor, getRandomName } from './userInfo'
+import { DocumentI } from './atoms'
+import { DocumentRoom } from './documentClass'
 
 export const charLimit = 2000;
 
-const ydoc = new Y.Doc();
+// Function to change the document name
+export function handleDocument(document: DocumentI, provider: HocuspocusProvider, setProvider: (provider: DocumentRoom) => void) {
+  provider.disconnect();
 
-const provider = new HocuspocusProvider({
-  url: "ws://127.0.0.1:8080",
-  name: "events",
-  document: ydoc,
-  connect: true,
-  onOpen: () => {
-    console.log('websocket connection is created!!')
-  },
-  onStatus(data) {
-    console.log(data.status)
-  },
-  // onAwarenessUpdate: ({ states }) => {
-  //   console.log(states);
-  // },
-});
-
-const randomColor = () => {
-  return `rgb(${Math.random() * 255} ${Math.random() * 255} ${Math.random() * 255})`;
+  const newProvider = new DocumentRoom(document.title);
+  setProvider(newProvider);
 }
 
-export const extensions = [
-  Document,
-  Paragraph,
-  Text,
-  TaskItem,
-  GlobalDragHandle.configure({
-    dragHandleWidth: 30,
-    scrollTreshold: 100 
-  }),
-  BubbleMenu,
-  Underline,
-  CharacterCount.configure({
-    limit: charLimit,
-  }),
-  Link.configure({
-    autolink: false,
-    protocols: ['ftp', 'mailto'],
-    HTMLAttributes: {
-      class: 'cursor-pointer',
-    },
-  }),
-  TaskList.configure({
-    itemTypeName: 'taskItem'
-  }),
-  Color.configure({ types: [TextStyle.name, ListItem.name] }),
-  TextStyle.configure({ HTMLAttributes: [ListItem.name] }),
-  StarterKit.configure({
-    bulletList: {
-      keepMarks: true,
-      keepAttributes: false, 
+export const getExtensions = (provider: HocuspocusProvider) => {
+  const extensions = [
+    Document,
+    Paragraph,
+    Text,
+    TaskItem,
+    GlobalDragHandle.configure({
+      dragHandleWidth: 30,
+      scrollTreshold: 100 
+    }),
+    BubbleMenu,
+    Underline,
+    CharacterCount.configure({
+      limit: charLimit,
+    }),
+    Link.configure({
+      autolink: false,
+      protocols: ['ftp', 'mailto'],
       HTMLAttributes: {
-        class: cn("list-disc list-outside leading-normal -mt-2 pl-5"),
+        class: 'cursor-pointer',
       },
-    },
-    orderedList: {
-      keepMarks: true,
-      keepAttributes: false, 
-      HTMLAttributes: {
-        class: cn("list-decimal list-outside leading-normal -mt-2 pl-5"),
+    }),
+    TaskList.configure({
+      itemTypeName: 'taskItem'
+    }),
+    Color.configure({ types: [TextStyle.name, ListItem.name] }),
+    TextStyle.configure({ HTMLAttributes: [ListItem.name] }),
+    StarterKit.configure({
+      bulletList: {
+        keepMarks: true,
+        keepAttributes: false, 
+        HTMLAttributes: {
+          class: cn("list-disc list-outside leading-normal -mt-2 pl-5"),
+        },
       },
-    },
-    
-    listItem: {
-      HTMLAttributes: {
-        class: cn("leading-normal -mb-2"),
+      orderedList: {
+        keepMarks: true,
+        keepAttributes: false, 
+        HTMLAttributes: {
+          class: cn("list-decimal list-outside leading-normal -mt-2 pl-5"),
+        },
       },
-    },
-    blockquote: {
-      HTMLAttributes: {
-        class: cn("border-l-4 border-primary"),
+      
+      listItem: {
+        HTMLAttributes: {
+          class: cn("leading-normal -mb-2"),
+        },
       },
-    },
-    codeBlock: {
-      languageClassPrefix: "language-javacript",     
-      HTMLAttributes: {
-        class: cn("rounded-md bg-muted text-muted-foreground border p-5 bg-slate-100 font-mono font-medium"),
+      blockquote: {
+        HTMLAttributes: {
+          class: cn("border-l-4 border-primary"),
+        },
       },
-    },
-    code: {
-      HTMLAttributes: {
-        class: cn("rounded-md bg-muted  px-1.5 py-1 bg-slate-100 font-mono font-medium"),
-        spellcheck: "false",
+      codeBlock: {
+        languageClassPrefix: "language-javacript",     
+        HTMLAttributes: {
+          class: cn("rounded-md bg-muted text-muted-foreground border p-5 bg-slate-100 font-mono font-medium"),
+        },
       },
-    },
-    history: false,
-  }),
-  Collaboration.configure({
-    document: provider.document,
-  }),
-  CollaborationCursor.configure({
-    provider,
-    user: { name: uuid().substring(5), color: randomColor() },
-  }),
-  Placeholder.configure({
-    placeholder: 'Start typing about something...',
-  }),
-  CustomBlockCommand.configure({
-    suggestion: {
-      items: () => CustomBlockList,
-      render: renderItems,
-    },
-  }),
-]
+      code: {
+        HTMLAttributes: {
+          class: cn("rounded-md bg-muted  px-1.5 py-1 bg-slate-100 font-mono font-medium"),
+          spellcheck: "false",
+        },
+      },
+      history: false,
+    }),
+    Collaboration.configure({
+      document: provider.document,
+    }),
+    CollaborationCursor.configure({
+      provider,
+      user: { name: getRandomName(), color: getRandomColor() },
+    }),
+    Placeholder.configure({
+      placeholder: 'Start typing about something...',
+    }),
+    CustomBlockCommand.configure({
+      suggestion: {
+        items: () => CustomBlockList,
+        render: renderItems,
+      },
+    }),
+  ]
+  return extensions;
+} 

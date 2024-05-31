@@ -3,8 +3,9 @@ import CommandView from './CommandView'
 import SelectMenu from './SelectMenu'
 import { charLimit, getExtensions } from '../utils/extensions'
 import { useAtom } from 'jotai'
-import { defaultContentAtom } from '../utils/atoms'
+import { defaultContentAtom, providerAtom } from '../utils/atoms'
 import { DocumentRoom } from '../utils/documentClass'
+import { useEffect } from 'react'
 
 const handleCommandNavigation = (event: KeyboardEvent) => {
   if (["ArrowUp", "ArrowDown", "Enter"].includes(event.key)) {
@@ -53,9 +54,16 @@ const DocHeading = ({title} : {title: string}) => {
 
 const DocEditor = () => {
   const [docSchema, setDocSchema] = useAtom<JSONContent>(defaultContentAtom);
-  const currentProvider = new DocumentRoom(defaultDocument);
-  const provider = currentProvider.provider;
-  console.log(currentProvider)
+  const [docProvider, setDocProvider] = useAtom(providerAtom);
+  const provider = docProvider?.provider;
+  console.log(docProvider)
+  
+  useEffect(() => {
+    const currentProvider = new DocumentRoom(defaultDocument);
+    setDocProvider(currentProvider);
+  }, [])
+
+  if (!provider) return null;
 
   return (
     <>
@@ -69,7 +77,7 @@ const DocEditor = () => {
           setDocSchema(editor.getJSON());
         }}
         autofocus='start'
-        slotBefore={<DocHeading title={defaultDocument} />}
+        slotBefore={<DocHeading title={docProvider.name || defaultDocument} />}
         // slotAfter={<MyEditorFooter />}
       >
         <CommandView />

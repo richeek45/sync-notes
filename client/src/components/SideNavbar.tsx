@@ -1,18 +1,19 @@
 import { useAtom } from "jotai";
 import { Button } from "./ui/button";
-import { allDocumentsAtom } from "../utils/atoms";
+import { allDocumentsAtom, providerAtom } from "../utils/atoms";
 import { useEffect } from "react";
-
+import { handleDocument } from "../utils/extensions";
 
 const SideNavbar = () => {
-
   const [allDocuments, setAllDocuments] = useAtom(allDocumentsAtom)
+  const [docProvider, setDocProvider] = useAtom(providerAtom);
+  const provider = docProvider?.provider;
 
   useEffect(() => {
-    // fetch('http://localhost:8080/allDocs').then(res => res.json()).then(data => {
-    //   console.log(data, 'documents data');
-    //   setAllDocuments(data);
-    // })
+    fetch('http://localhost:8080/allDocs').then(res => res.json()).then(data => {
+      console.log(data, 'documents data');
+      setAllDocuments(data);
+    })
   }, [])
 
   return (
@@ -26,37 +27,20 @@ const SideNavbar = () => {
           </div>
           <div className="flex-1">
             <nav className="grid items-start px-4 text-sm font-medium">
-              <Button
-                variant='outline'
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-900 bg-gray-100 transition-all hover:text-gray-900 dark:bg-gray-800 dark:text-gray-50 dark:hover:text-gray-50"
-              >
-                Dashboard
-              </Button>
-              <Button
-                variant='outline'
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
-              >
-                Products
-              </Button>
-              <Button
-                variant='outline'
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
-              >
-                Orders
-                {/* <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">12</Badge> */}
-              </Button>
-              <Button
-                variant='outline'
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
-              >
-                Customers
-              </Button>
-              <Button
-                variant='outline'
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
-              >
-                Settings
-              </Button>
+              {allDocuments?.map(documents => (
+                <Button
+                  key={documents.id}
+                  variant='outline'
+                  className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-gray-900 bg-gray-100 transition-all hover:text-gray-900 dark:bg-gray-800 dark:text-gray-50 dark:hover:text-gray-50"
+                  onClick={() => {
+                    if (provider) {
+                      handleDocument(documents, provider, setDocProvider);
+                    }
+                  }}
+                >
+                  {documents.title}
+                </Button>
+              ))}
             </nav>
           </div>
         </div>
