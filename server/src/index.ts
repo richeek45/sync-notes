@@ -5,52 +5,53 @@ import dotenv from "dotenv";
 import { Database } from "@hocuspocus/extension-database";
 import { PrismaClient } from '@prisma/client'
 import cors from 'cors';
+import { Doc } from "yjs";
 
 export const prisma = new PrismaClient();
 
 dotenv.config();
 
+const ydoc = new Doc();
 const wsServer = Server.configure({
   port: 8080,
   extensions: [
     new Database({
       fetch: async ({ documentName }) : Promise<Uint8Array | null> => {
+        console.log(documentName, 'fetch')
         try {
           // fetch the exact document with the document name
           const data = await prisma.document.findFirst({
             where: {
-              // id: 'clwi3uc4v0000za6g8m2drvpa'
-              // id: 'clwjhfuqs0000kt8iv5n6upq9'
-              // id: 'clwiyqxk70000i9vzilpu11it'
-             id: 'clwjiy9hv000072y1i9v0rxx7'
+              title: documentName
             }
           })
           const documents = (new Uint8Array(data?.document as ArrayBuffer))
-          return documents;
+          if (documents.byteLength > 0) {
+            return (documents);
+          }
+          return null;
         } catch(error) {
           console.log('an error has occured!!')
           return null;
         }
       },
       
-      store: async ({ documentName, state }) => {
-        console.log(state)
+      store: async ({ documentName, state, context }) => {
+        console.log(documentName, context, 'store')
         const createDocument = await prisma.document.upsert({
-          // where: { id: 'clwi3uc4v0000za6g8m2drvpa' },
-          where: { id: 'clwjiy9hv000072y1i9v0rxx7' },
-
+          where: { 
+            title: documentName 
+          },
           create: {
+            title: documentName,
             document: state
           },
           update: {
+            title: documentName,
             document: state
           }
         })
-        // const createDocument = await prisma.document.create({
-        //   data: {
-        //     document: state
-        //   }
-        // })
+
         console.log(createDocument, "document created!!!!")
       }
     })
@@ -68,9 +69,7 @@ app.get("/", (req: Request, res: Response) => {
 
 app.get("/allDocs", async (req: Request, res: Response) => {
   const allDocs = await prisma.document.findMany({});
-  console.log(allDocs);
   res.json(allDocs);
-  // res.send("doc name changed!!");
 })
 
 app.ws("/", (websocket, request) => {
@@ -81,6 +80,7 @@ app.ws("/", (websocket, request) => {
     },
   };
 
+  console.log('new websocket connection')
   wsServer.handleConnection(websocket, request, context);
 })
 
