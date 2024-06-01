@@ -6,6 +6,7 @@ import { useAtom } from 'jotai'
 import { defaultContentAtom, providerAtom } from '../utils/atoms'
 import { DocumentRoom } from '../utils/documentClass'
 import { useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 
 const handleCommandNavigation = (event: KeyboardEvent) => {
   if (["ArrowUp", "ArrowDown", "Enter"].includes(event.key)) {
@@ -56,17 +57,23 @@ const DocEditor = () => {
   const [docSchema, setDocSchema] = useAtom<JSONContent>(defaultContentAtom);
   const [docProvider, setDocProvider] = useAtom(providerAtom);
   const provider = docProvider?.provider;
-  console.log(docProvider)
-  
+  const { editor } = useCurrentEditor();
+  const { name } = useParams();
+
   useEffect(() => {
-    const currentProvider = new DocumentRoom(defaultDocument);
+    const currentProvider = new DocumentRoom(name || defaultDocument);
     setDocProvider(currentProvider);
+
+    return () => {
+      setDocProvider(null);
+      editor?.destroy();
+    }
   }, [])
 
   if (!provider) return null;
 
   return (
-    <>
+    <div className="mx-2">
       <EditorProvider 
         extensions={getExtensions(provider)} 
         content={docSchema}  
@@ -83,7 +90,7 @@ const DocEditor = () => {
         <CommandView />
         <SelectMenu />
       </EditorProvider>
-    </>
+    </div>
   )
 }
 

@@ -1,13 +1,12 @@
 import { useAtom } from "jotai";
 import { Button } from "./ui/button";
-import { allDocumentsAtom, providerAtom } from "../utils/atoms";
+import { allDocumentsAtom } from "../utils/atoms";
 import { useEffect } from "react";
-import { handleDocument } from "../utils/extensions";
+import { useNavigate } from "react-router-dom";
 
 const SideNavbar = () => {
   const [allDocuments, setAllDocuments] = useAtom(allDocumentsAtom)
-  const [docProvider, setDocProvider] = useAtom(providerAtom);
-  const provider = docProvider?.provider;
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch('http://localhost:8080/allDocs').then(res => res.json()).then(data => {
@@ -27,18 +26,19 @@ const SideNavbar = () => {
           </div>
           <div className="flex-1">
             <nav className="grid items-start px-4 text-sm font-medium">
-              {allDocuments?.map(documents => (
+              {allDocuments?.map(doc => (
                 <Button
-                  key={documents.id}
+                  key={doc.id}
                   variant='outline'
                   className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-gray-900 bg-gray-100 transition-all hover:text-gray-900 dark:bg-gray-800 dark:text-gray-50 dark:hover:text-gray-50"
                   onClick={() => {
-                    if (provider) {
-                      handleDocument(documents, provider, setDocProvider);
-                    }
+                    navigate(`/`);
+                    setTimeout(() => {
+                      navigate(`/document/${doc.title}`);
+                    }, 500)
                   }}
                 >
-                  {documents.title}
+                  {doc.title}
                 </Button>
               ))}
             </nav>
