@@ -107,7 +107,7 @@ export const getExtensions = (provider: HocuspocusProvider) => {
       user: { name: getRandomName(), color: getRandomColor() },
     }),
     Placeholder.configure({
-      placeholder: 'Start typing about something...',
+      placeholder: 'Write something or type (/) for commands...',
     }),
     CustomBlockCommand.configure({
       suggestion: {
