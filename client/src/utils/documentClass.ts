@@ -1,6 +1,7 @@
 import { HocuspocusProvider, StatesArray } from "@hocuspocus/provider";
 import { awarenessStatesToArray } from "@hocuspocus/common";
 import * as Y from "yjs";
+import { ENV_VARIABLES } from "./env";
 
 
 export class DocumentRoom {
@@ -16,7 +17,7 @@ export class DocumentRoom {
 
 
     this.provider = new HocuspocusProvider({
-      url: "ws://127.0.0.1:8080",
+      url: `${ENV_VARIABLES.WEBSOCKET}`,
       name: this.name,
       document: this.doc,
       preserveConnection: false,

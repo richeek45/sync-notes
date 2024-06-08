@@ -3,13 +3,14 @@ import { Button } from "./ui/button";
 import { allDocumentsAtom } from "../utils/atoms";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { ENV_VARIABLES } from "../utils/env";
 
 const SideNavbar = () => {
   const [allDocuments, setAllDocuments] = useAtom(allDocumentsAtom)
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch('http://localhost:8080/allDocs').then(res => res.json()).then(data => {
+    fetch(`${ENV_VARIABLES.BACKEND}/allDocs`).then(res => res.json()).then(data => {
       console.log(data, 'documents data');
       setAllDocuments(data);
     })
