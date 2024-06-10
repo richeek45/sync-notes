@@ -24,6 +24,18 @@ const editorProps = {
   handleDOMEvents: {
     keydown: (_view: unknown, event: KeyboardEvent) => handleCommandNavigation(event),
   },
+  transformPastedHTML(html: string) {
+    // Remove all the span elements - documents get corrupted 
+    const htmlElement = document.createElement('p');
+    htmlElement.innerHTML = html;
+    const tagNames: string[] = []; 
+    htmlElement.childNodes.forEach(node => tagNames.push(node.nodeName))
+    const content = htmlElement.textContent ?? "";
+    if (tagNames.includes('SPAN')) {
+      return `<p>${content}</p>`
+    }
+    return html;
+  },
   transformPastedText(text: string) {
     return text.toUpperCase()
   }
