@@ -80,7 +80,6 @@ const DocEditor = () => {
         editorProps={editorProps}
         editable={true}
         onUpdate={({ editor }) => {
-          console.log('editor is updating!!', editor.getJSON())
           setDocSchema(editor.getJSON());
         }}
         autofocus='start'

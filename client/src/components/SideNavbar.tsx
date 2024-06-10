@@ -11,7 +11,6 @@ const SideNavbar = () => {
 
   useEffect(() => {
     fetch(`${ENV_VARIABLES.BACKEND}/allDocs`).then(res => res.json()).then(data => {
-      console.log(data, 'documents data');
       setAllDocuments(data);
     })
   }, [])
